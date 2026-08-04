@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: 의존성 설치
+        run: npm ci
+
+      - name: 코드 규칙 검사
+        run: npm run lint
+
+      - name: 타입 검사
+        run: npm run typecheck
+
+      - name: 테스트
+        run: npm run test:ci
+
+      - name: 빌드 검증
+        run: npm run build
+
+      - name: 빌드 결과물 보관
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: frontend/dist
+          retention-days: 7
