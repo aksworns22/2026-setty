@@ -73,4 +73,12 @@ public class EstimateRequest {
         return new EstimateRequest(name, phoneNumber, tradeArea, itemType, highValueItem);
     }
 
+    public void markEstimateNotified() {
+        if (status != EstimateRequestStatus.PENDING_REVIEW) {
+            throw new InvalidEstimateRequestStatusException();
+        }
+
+        this.status = EstimateRequestStatus.ESTIMATE_NOTIFIED;
+    }
+
 }
