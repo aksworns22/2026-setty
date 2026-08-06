@@ -1,0 +1,36 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--setty-color-surface);
+  color: var(--setty-color-text-strong);
+  font-family: var(--setty-font-family);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: var(--setty-color-brand);
+}
+
+a:hover {
+  color: var(--setty-color-brand-hover);
+}

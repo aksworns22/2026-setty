@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import App from '@/App';
+import App from '@/app/App';
 
 test('버튼을 누르면 카운트가 올라간다', async () => {
   render(<App />);
