@@ -148,6 +148,36 @@ class OperatorEstimateRequestControllerTest {
     }
 
     @Test
+    void rejectsMissingEstimatedAmountWhenTransportIsFeasible() throws Exception {
+        mockMvc.perform(post("/api/operator/estimate-requests/1/manual-notification")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "messageContent": "예상 운송비 안내입니다.",
+                                  "transportFeasible": true,
+                                  "estimatedAmount": null
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.estimatedAmount").exists());
+    }
+
+    @Test
+    void rejectsEstimatedAmountWhenTransportIsInfeasible() throws Exception {
+        mockMvc.perform(post("/api/operator/estimate-requests/1/manual-notification")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "messageContent": "현재 조건에서는 운송이 어렵습니다.",
+                                  "transportFeasible": false,
+                                  "estimatedAmount": 30000
+                                }
+                                """))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors.estimatedAmount").exists());
+    }
+
+    @Test
     void rejectsManualNotificationForAnAlreadyNotifiedRequest() throws Exception {
         doThrow(new InvalidEstimateRequestStatusException())
                 .when(operatorEstimateRequestService)
