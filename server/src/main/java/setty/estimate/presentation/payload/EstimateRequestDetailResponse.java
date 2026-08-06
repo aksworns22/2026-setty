@@ -1,4 +1,4 @@
-package setty.estimate.presentation;
+package setty.estimate.presentation.payload;
 
 import java.time.OffsetDateTime;
 import setty.estimate.application.EstimateRequestDetail;

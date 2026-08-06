@@ -1,4 +1,4 @@
-package setty.estimate.presentation;
+package setty.estimate.presentation.payload;
 
 import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;

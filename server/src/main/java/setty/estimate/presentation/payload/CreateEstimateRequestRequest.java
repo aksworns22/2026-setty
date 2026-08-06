@@ -1,10 +1,11 @@
-package setty.estimate.presentation;
+package setty.estimate.presentation.payload;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import tools.jackson.databind.annotation.JsonDeserialize;
+import setty.estimate.presentation.PhoneNumberDeserializer;
 
 public record CreateEstimateRequestRequest(
         @NotBlank(message = "이름은 필수입니다.")
