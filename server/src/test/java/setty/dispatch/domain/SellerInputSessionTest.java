@@ -3,9 +3,11 @@ package setty.dispatch.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import setty.dispatch.exception.SellerInputAlreadySubmittedException;
 
+@DisplayName("판매자 입력 세션")
 class SellerInputSessionTest {
     private static SellerInputSession newSession() {
         return new SellerInputSession("session-token", new DispatchRequest(
@@ -29,11 +31,13 @@ class SellerInputSessionTest {
     }
 
     @Test
+    @DisplayName("발급되면 아직 사용되지 않은 상태다")
     void startsPending() {
         assertThat(newSession().isCompleted()).isFalse();
     }
 
     @Test
+    @DisplayName("세션을 완료하면 배차 요청도 함께 최종 검토 대기로 넘어간다")
     void completingSessionAlsoMovesDispatchRequestForward() {
         final SellerInputSession session = newSession();
 
@@ -44,6 +48,7 @@ class SellerInputSessionTest {
     }
 
     @Test
+    @DisplayName("이미 완료된 세션은 다시 사용할 수 없다")
     void rejectsReuseOfACompletedSession() {
         final SellerInputSession session = newSession();
         session.complete(newSellerInput());

@@ -3,9 +3,11 @@ package setty.dispatch.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import setty.dispatch.exception.DispatchStatusTransitionException;
 
+@DisplayName("배차 요청")
 class DispatchRequestTest {
     private static DispatchRequest newDispatchRequest() {
         return new DispatchRequest(
@@ -29,6 +31,7 @@ class DispatchRequestTest {
     }
 
     @Test
+    @DisplayName("생성되면 판매자 입력 대기 상태로 시작한다")
     void startsInSellerInputPending() {
         final DispatchRequest dispatchRequest = newDispatchRequest();
 
@@ -37,6 +40,7 @@ class DispatchRequestTest {
     }
 
     @Test
+    @DisplayName("판매자 입력이 채워지면 최종 검토 대기로 넘어간다")
     void movesToFinalReviewPendingWhenSellerInputIsCompleted() {
         final DispatchRequest dispatchRequest = newDispatchRequest();
 
@@ -48,6 +52,7 @@ class DispatchRequestTest {
     }
 
     @Test
+    @DisplayName("판매자 입력 대기가 아닌 요청에는 판매자 입력을 다시 채울 수 없다")
     void rejectsSellerInputWhenRequestIsNoLongerWaitingForSeller() {
         final DispatchRequest dispatchRequest = newDispatchRequest();
         dispatchRequest.completeSellerInput(newSellerInput());
@@ -57,6 +62,7 @@ class DispatchRequestTest {
     }
 
     @Test
+    @DisplayName("DEC-022에 합의된 배차 상태 11개를 모두 선언한다")
     void declaresEveryAgreedDispatchStatus() {
         assertThat(DispatchStatus.values()).hasSize(11);
     }
