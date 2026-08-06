@@ -23,6 +23,9 @@ dependencies {
     implementation 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation platform('software.amazon.awssdk:bom:2.46.8')
+    implementation 'software.amazon.awssdk:s3'
 }
 
 tasks.named('test') {
