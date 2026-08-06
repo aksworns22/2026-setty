@@ -1,8 +1,8 @@
 package setty.estimate.presentation.payload;
 
 import java.time.OffsetDateTime;
-import setty.estimate.application.EstimateRequestDetail;
-import setty.estimate.application.ManualNotificationResult;
+import setty.estimate.application.query.EstimateRequestDetail;
+import setty.estimate.application.query.ManualNotificationResult;
 import setty.estimate.domain.EstimateRequestStatus;
 
 public record EstimateRequestDetailResponse(

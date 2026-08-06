@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import setty.estimate.application.CreateEstimateRequestCommand;
-import setty.estimate.application.CreatedEstimateRequest;
 import setty.estimate.application.EstimateRequestCreateService;
+import setty.estimate.application.command.CreateEstimateRequestCommand;
+import setty.estimate.application.query.CreatedEstimateRequest;
 import setty.estimate.presentation.payload.CreateEstimateRequestRequest;
 import setty.estimate.presentation.payload.EstimateRequestCreateResponse;
 

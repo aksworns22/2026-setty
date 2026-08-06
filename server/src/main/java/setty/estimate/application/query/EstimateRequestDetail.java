@@ -1,4 +1,4 @@
-package setty.estimate.application;
+package setty.estimate.application.query;
 
 import java.time.OffsetDateTime;
 import setty.estimate.domain.EstimateRequestStatus;

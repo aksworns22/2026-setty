@@ -23,12 +23,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import setty.estimate.application.EstimateRequestDetail;
-import setty.estimate.application.EstimateRequestNotFoundException;
-import setty.estimate.application.EstimateRequestSummary;
-import setty.estimate.application.ManualNotificationResult;
 import setty.estimate.application.OperatorEstimateRequestService;
-import setty.estimate.application.RecordManualNotificationCommand;
+import setty.estimate.application.command.RecordManualNotificationCommand;
+import setty.estimate.application.exception.EstimateRequestNotFoundException;
+import setty.estimate.application.query.EstimateRequestDetail;
+import setty.estimate.application.query.EstimateRequestSummary;
+import setty.estimate.application.query.ManualNotificationResult;
 import setty.estimate.domain.EstimateRequestStatus;
 import setty.estimate.domain.InvalidEstimateRequestStatusException;
 

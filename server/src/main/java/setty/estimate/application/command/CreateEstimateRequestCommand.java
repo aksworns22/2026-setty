@@ -1,4 +1,4 @@
-package setty.estimate.application;
+package setty.estimate.application.command;
 
 public record CreateEstimateRequestCommand(
         String name,

@@ -1,4 +1,4 @@
-package setty.estimate.application;
+package setty.estimate.application.exception;
 
 public class EstimateRequestNotFoundException extends RuntimeException {
 }
