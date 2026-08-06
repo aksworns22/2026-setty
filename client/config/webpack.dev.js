@@ -16,7 +16,20 @@ module.exports = merge(common, {
     rules: [
       {
         test: /\.css$/i,
-        use: ['style-loader', 'css-loader', 'postcss-loader'],
+        use: [
+          'style-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              modules: {
+                auto: /\.module\.css$/i,
+                localIdentName: '[name]__[local]--[hash:base64:5]',
+                namedExport: false,
+              },
+            },
+          },
+          'postcss-loader',
+        ],
       },
     ],
   },
