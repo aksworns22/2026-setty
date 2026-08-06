@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import setty.estimate.application.EstimateRequestCreateService;
 import setty.estimate.application.command.CreateEstimateRequestCommand;
-import setty.estimate.application.query.CreatedEstimateRequest;
+import setty.estimate.application.result.CreatedEstimateRequest;
 import setty.estimate.domain.EstimateRequestStatus;
 
 @ExtendWith(MockitoExtension.class)
