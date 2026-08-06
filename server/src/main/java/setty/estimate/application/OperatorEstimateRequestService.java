@@ -36,7 +36,7 @@ public class OperatorEstimateRequestService {
     public EstimateRequestDetail findById(final Long estimateRequestId) {
         final EstimateRequest estimateRequest = findEstimateRequest(estimateRequestId);
         final ManualNotificationResult manualNotification = manualNotificationRepository
-                .findByEstimateRequest_Id(estimateRequestId)
+                .findByEstimateRequestId(estimateRequestId)
                 .map(this::toManualNotificationResult)
                 .orElse(null);
 
@@ -62,7 +62,7 @@ public class OperatorEstimateRequestService {
         estimateRequest.markEstimateNotified();
 
         manualNotificationRepository.save(ManualNotification.create(
-                estimateRequest,
+                estimateRequestId,
                 command.messageContent(),
                 command.transportFeasible(),
                 command.estimatedAmount()

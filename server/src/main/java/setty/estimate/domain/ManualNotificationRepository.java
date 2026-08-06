@@ -4,5 +4,5 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ManualNotificationRepository extends JpaRepository<ManualNotification, Long> {
-    Optional<ManualNotification> findByEstimateRequest_Id(Long estimateRequestId);
+    Optional<ManualNotification> findByEstimateRequestId(Long estimateRequestId);
 }

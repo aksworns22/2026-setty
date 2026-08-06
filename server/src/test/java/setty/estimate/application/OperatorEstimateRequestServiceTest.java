@@ -59,6 +59,7 @@ class OperatorEstimateRequestServiceTest {
         verify(manualNotificationRepository).save(manualNotificationCaptor.capture());
         final ManualNotification savedManualNotification = manualNotificationCaptor.getValue();
         assertThat(estimateRequest.getStatus()).isEqualTo(EstimateRequestStatus.ESTIMATE_NOTIFIED);
+        assertThat(savedManualNotification.getEstimateRequestId()).isEqualTo(1L);
         assertThat(savedManualNotification.getMessageContent()).isEqualTo("예상 운송비는 30000원입니다.");
         assertThat(savedManualNotification.isTransportFeasible()).isTrue();
         assertThat(savedManualNotification.getEstimatedAmount()).isEqualTo(30000L);
