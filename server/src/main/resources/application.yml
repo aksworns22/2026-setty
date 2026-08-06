@@ -1,0 +1,4 @@
+aws:
+  s3:
+    region: ap-northeast-2
+    bucket-name: techcourse-project-2026
