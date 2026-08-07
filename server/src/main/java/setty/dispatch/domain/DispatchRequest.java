@@ -93,7 +93,7 @@ public class DispatchRequest {
     }
 
     public boolean isSellerInputCompleted() {
-        return status != DispatchStatus.SELLER_INPUT_PENDING;
+        return sellerInput != null && sellerInput.isPresent();
     }
 
     public Long getId() {
