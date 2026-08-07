@@ -1,12 +1,9 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import App from '@/app/App';
 
-test('버튼을 누르면 카운트가 올라간다', async () => {
+test('앱 진입점이 배차 흐름 첫 화면을 보여준다', () => {
   render(<App />);
 
-  const button = screen.getByRole('button', { name: /클릭/ });
-  await userEvent.click(button);
-
-  expect(screen.getByRole('button', { name: /클릭 1회/ })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: /거래를 시작하세요/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: '거래 링크 만들기' })).toBeInTheDocument();
 });
