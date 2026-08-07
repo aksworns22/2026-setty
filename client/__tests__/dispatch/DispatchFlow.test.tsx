@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import DispatchFlow from '@/flows/dispatch/DispatchFlow';
+import { API_ORIGIN } from '@/shared/api/http';
 
 /**
  * 배차 flow의 화면 전환과 server 계약 연결을 확인한다.
@@ -70,7 +71,7 @@ describe('구매자 흐름', () => {
     await waitFor(() => expect(mockFetch).toHaveBeenCalled());
 
     const { url, init } = lastRequest();
-    expect(url).toBe('/api/dispatch-requests');
+    expect(url).toBe(`${API_ORIGIN}/api/dispatch-requests`);
     expect(init?.method).toBe('POST');
     expect(JSON.parse(String(init?.body))).toEqual({
       itemType: '3인용 소파',
@@ -133,7 +134,7 @@ describe('판매자 흐름', () => {
 
     await waitFor(() =>
       expect(mockFetch).toHaveBeenCalledWith(
-        `/api/dispatch-requests/seller-sessions/${SELLER_TOKEN}`,
+        `${API_ORIGIN}/api/dispatch-requests/seller-sessions/${SELLER_TOKEN}`,
         expect.objectContaining({ method: 'GET' }),
       ),
     );
@@ -147,7 +148,9 @@ describe('판매자 흐름', () => {
 
     await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(2));
     const { url, init } = lastRequest();
-    expect(url).toBe(`/api/dispatch-requests/seller-sessions/${SELLER_TOKEN}`);
+    expect(url).toBe(
+      `${API_ORIGIN}/api/dispatch-requests/seller-sessions/${SELLER_TOKEN}`,
+    );
     expect(init?.method).toBe('POST');
     expect(JSON.parse(String(init?.body))).toEqual({
       sellerName: '가상판매자',

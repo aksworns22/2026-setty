@@ -2,6 +2,7 @@ import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useLocation, useNavigate, useRoutes } from 'react-router-dom';
 import { dispatchRoutes } from '@/app/routes/dispatchRoutes';
+import { API_ORIGIN } from '@/shared/api/http';
 
 const BUYER_TOKEN = 'buyer-token-test';
 const SELLER_INPUT_URL = 'https://example.test/seller-input/seller-token-test';
@@ -115,7 +116,7 @@ describe('Issue #14 구매자 상태 카드', () => {
       SELLER_INPUT_URL,
     );
     expect(mockFetch).toHaveBeenLastCalledWith(
-      `/api/dispatch-requests/${BUYER_TOKEN}`,
+      `${API_ORIGIN}/api/dispatch-requests/${BUYER_TOKEN}`,
       expect.objectContaining({ method: 'GET' }),
     );
   });

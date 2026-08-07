@@ -1,3 +1,5 @@
+import { API_ORIGIN } from '@/shared/api/http';
+
 /**
  * dispatch flow 전용 HTTP 클라이언트다.
  * server `GlobalExceptionHandler`가 오류를 `{ "message": string }`으로 돌려주므로
@@ -16,24 +18,6 @@ export class DispatchApiError extends Error {
 
 const DEFAULT_ERROR_MESSAGE = '요청을 처리하지 못했어요. 잠시 후 다시 시도해 주세요.';
 const NETWORK_ERROR_MESSAGE = '네트워크에 연결하지 못했어요. 연결을 확인해 주세요.';
-
-/**
- * webpack `Dotenv`가 빌드 시점에 치환하는 값이다.
- * client tsconfig에 node 타입을 넣는 것은 공동 설정 변경이라 이 파일에서만 선언한다.
- */
-declare const process: { env?: Record<string, string | undefined> } | undefined;
-
-/**
- * `Dotenv`가 정의하지 않은 환경에서도 안전하게 읽는다.
- * 값이 없으면 같은 오리진의 `/api/...`로 요청한다.
- */
-const resolveBaseUrl = (): string => {
-  if (typeof process === 'undefined' || process.env === undefined) {
-    return '';
-  }
-
-  return process.env.API_BASE_URL ?? '';
-};
 
 const readErrorMessage = async (response: Response): Promise<string> => {
   try {
@@ -62,7 +46,7 @@ async function request<TResponse>(
 
   let response: Response;
   try {
-    response = await fetch(`${resolveBaseUrl()}${path}`, {
+    response = await fetch(`${API_ORIGIN}${path}`, {
       method,
       headers: hasBody ? { 'Content-Type': 'application/json' } : undefined,
       body: hasBody ? JSON.stringify(init?.body) : undefined,
