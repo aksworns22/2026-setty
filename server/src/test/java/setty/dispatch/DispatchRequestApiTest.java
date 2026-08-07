@@ -256,7 +256,9 @@ class DispatchRequestApiTest {
         mockMvc.perform(get("/api/operator/dispatch-requests")
                         .param("status", "존재하지-않는-상태")
                         .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("status")))
+                .andExpect(content().string(not(containsString("/api/operator"))));
     }
 
     @Test
