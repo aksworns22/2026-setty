@@ -42,6 +42,7 @@ export interface BuyerDispatchRequestResponse {
   highValueItem: boolean;
   sellerInputCompleted: boolean;
   createdAt: string;
+  sellerInputUrl: string;
 }
 
 /** GET /api/dispatch-requests/seller-sessions/{token} */

@@ -19,6 +19,8 @@ interface DispatchFlowProps {
    * dispatch flow는 직접 import하지 않고 app 영역이 넘겨주는 callback에 위임한다.
    */
   onCheckEstimate?: () => void;
+  /** 구매자 상태 카드의 직접 URL 이동은 app router에 위임한다. */
+  onOpenBuyerStatus?: (buyerToken: string) => void;
 }
 
 interface BuyerSession {
@@ -40,7 +42,10 @@ const readInitialLocation = () => {
   };
 };
 
-export default function DispatchFlow({ onCheckEstimate }: DispatchFlowProps) {
+export default function DispatchFlow({
+  onCheckEstimate,
+  onOpenBuyerStatus,
+}: DispatchFlowProps) {
   const [{ sellerToken, finalAmountToken }] = useState(readInitialLocation);
   const [step, setStep] = useState<DispatchStep>(() => {
     if (sellerToken) {
@@ -57,8 +62,25 @@ export default function DispatchFlow({ onCheckEstimate }: DispatchFlowProps) {
   const goHome = () => setStep('INTRO');
 
   const handleCreated = (result: BuyerDispatchRequestCreateResponse) => {
-    setBuyerSession({ buyerToken: result.buyerToken, sellerInputUrl: result.sellerInputUrl });
+    setBuyerSession({
+      buyerToken: result.buyerToken,
+      sellerInputUrl: result.sellerInputUrl,
+    });
     setStep('LINK_CREATED');
+  };
+
+  const handleOpenBuyerStatus = () => {
+    if (!buyerSession) {
+      return;
+    }
+
+    if (onOpenBuyerStatus) {
+      onOpenBuyerStatus(buyerSession.buyerToken);
+      return;
+    }
+
+    // Router 없이 flow만 렌더링하는 테스트·격리 환경의 fallback이다.
+    setStep('SELLER_WAITING');
   };
 
   if (step === 'SELLER_FORM' && sellerToken) {
@@ -86,7 +108,7 @@ export default function DispatchFlow({ onCheckEstimate }: DispatchFlowProps) {
     return (
       <LinkCreatedScreen
         sellerInputUrl={buyerSession.sellerInputUrl}
-        onNext={() => setStep('SELLER_WAITING')}
+        onNext={handleOpenBuyerStatus}
       />
     );
   }

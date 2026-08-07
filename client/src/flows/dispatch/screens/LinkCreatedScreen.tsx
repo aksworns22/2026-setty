@@ -10,7 +10,7 @@ import styles from './LinkCreatedScreen.module.css';
 interface LinkCreatedScreenProps {
   /** POST /api/dispatch-requests 응답의 sellerInputUrl */
   sellerInputUrl: string;
-  /** 공유·복사를 마치고 다음 화면(판매자 대기)으로 이동 */
+  /** 공유·복사를 마치거나 직접 선택해 다음 화면(판매자 대기)으로 이동 */
   onNext: () => void;
 }
 
@@ -40,7 +40,10 @@ function canUseClipboard(): boolean {
  * 배차 요청 생성 직후 판매자 입력 링크를 전달하는 화면이다.
  * 서버를 호출하지 않고 브라우저 공유·복사만 사용한다.
  */
-export default function LinkCreatedScreen({ sellerInputUrl, onNext }: LinkCreatedScreenProps) {
+export default function LinkCreatedScreen({
+  sellerInputUrl,
+  onNext,
+}: LinkCreatedScreenProps) {
   const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,7 +54,9 @@ export default function LinkCreatedScreen({ sellerInputUrl, onNext }: LinkCreate
 
   async function copyLink(): Promise<void> {
     if (!clipboardSupported) {
-      setError('이 브라우저에서는 링크를 자동으로 복사할 수 없어요. 아래 링크를 직접 복사해 주세요.');
+      setError(
+        '이 브라우저에서는 링크를 자동으로 복사할 수 없어요. 아래 링크를 직접 복사해 주세요.',
+      );
       return;
     }
 
@@ -101,6 +106,7 @@ export default function LinkCreatedScreen({ sellerInputUrl, onNext }: LinkCreate
         <>
           <PrimaryButton onClick={() => void handleShare()}>링크 공유하기</PrimaryButton>
           <TextButton onClick={() => void handleCopy()}>링크 복사</TextButton>
+          <TextButton onClick={onNext}>판매자 입력 상태 확인하기</TextButton>
         </>
       }
     >
