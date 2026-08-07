@@ -24,6 +24,10 @@ public class SellerInput {
         this.availablePickupTime = availablePickupTime;
     }
 
+    public boolean isPresent() {
+        return sellerName != null;
+    }
+
     public String getSellerName() {
         return sellerName;
     }

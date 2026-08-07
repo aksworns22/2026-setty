@@ -1,6 +1,7 @@
 package setty.dispatch.dto.operator;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import setty.common.time.SeoulDateTime;
 import setty.dispatch.domain.DispatchRequest;
 import setty.dispatch.domain.DispatchStatus;
 
@@ -10,7 +11,8 @@ public record OperatorDispatchRequestSummaryResponse(
         String itemType,
         boolean highValueItem,
         boolean sellerInputCompleted,
-        LocalDateTime createdAt
+        Integer finalQuotedAmount,
+        OffsetDateTime createdAt
 ) {
     public static OperatorDispatchRequestSummaryResponse from(final DispatchRequest dispatchRequest) {
         return new OperatorDispatchRequestSummaryResponse(
@@ -19,7 +21,8 @@ public record OperatorDispatchRequestSummaryResponse(
                 dispatchRequest.getItemType(),
                 dispatchRequest.isHighValueItem(),
                 dispatchRequest.isSellerInputCompleted(),
-                dispatchRequest.getCreatedAt()
+                dispatchRequest.getFinalQuotedAmount(),
+                SeoulDateTime.toOffsetDateTime(dispatchRequest.getCreatedAt())
         );
     }
 }

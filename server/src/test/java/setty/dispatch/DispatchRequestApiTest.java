@@ -291,6 +291,96 @@ class DispatchRequestApiTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @DisplayName("운영자 비밀번호가 맞으면 확인 요청에 성공한다")
+    void operatorAuthAcceptsCorrectSecret() throws Exception {
+        mockMvc.perform(get("/api/operator/auth")
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.authenticated").value(true));
+    }
+
+    @Test
+    @DisplayName("운영자 비밀번호가 없거나 틀리면 확인 요청을 막는다")
+    void operatorAuthRejectsMissingOrWrongSecret() throws Exception {
+        mockMvc.perform(get("/api/operator/auth"))
+                .andExpect(status().isUnauthorized());
+
+        mockMvc.perform(get("/api/operator/auth")
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, "wrong-secret"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("판매자 입력 링크는 구매자와 판매자 응답에 노출하지 않는다")
+    void sellerInputUrlIsNeverExposedToBuyerOrSeller() throws Exception {
+        final String created = createDispatchRequest();
+        final String sellerToken = sellerToken(created);
+
+        mockMvc.perform(get("/api/dispatch-requests/{buyerToken}", buyerToken(created)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sellerInputUrl").doesNotExist())
+                .andExpect(content().string(not(containsString(sellerToken))));
+
+        mockMvc.perform(get("/api/dispatch-requests/seller-sessions/{token}", sellerToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sellerInputUrl").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("판매자가 입력을 마치면 운영자 상세에 입력 시각이 남는다")
+    void operatorDetailRecordsSellerInputCompletedAt() throws Exception {
+        final String created = createDispatchRequest();
+
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", latestDispatchRequestId())
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(jsonPath("$.sellerInputCompletedAt").doesNotExist());
+
+        submitSellerInput(sellerToken(created));
+
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", latestDispatchRequestId())
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(jsonPath("$.sellerInputCompletedAt").isNotEmpty());
+    }
+
+    @Test
+    @DisplayName("운영 기록 항목은 아직 값이 없더라도 응답에 자리를 갖는다")
+    void operatorDetailContainsOperationRecordFields() throws Exception {
+        createDispatchRequest();
+
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", latestDispatchRequestId())
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.finalQuotedAmount").doesNotExist())
+                .andExpect(jsonPath("$.amountCheckedAt").doesNotExist())
+                .andExpect(jsonPath("$.operatorNote").doesNotExist())
+                .andExpect(jsonPath("$.closedReason").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("연락처는 하이픈 없이 저장하고 응답에서 하이픈을 붙여 보여준다")
+    void normalizesPhoneNumberOnStoreAndFormatsOnResponse() throws Exception {
+        final String created = createDispatchRequest();
+        submitSellerInput(sellerToken(created));
+
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", latestDispatchRequestId())
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.buyer.phoneNumber").value(BUYER_PHONE_NUMBER))
+                .andExpect(jsonPath("$.seller.phoneNumber").value(SELLER_PHONE_NUMBER));
+    }
+
+    @Test
+    @DisplayName("시각은 한국 시간대 오프셋을 포함해 응답한다")
+    void respondsWithSeoulOffsetDateTime() throws Exception {
+        createDispatchRequest();
+
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", latestDispatchRequestId())
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.createdAt").value(containsString("+09:00")));
+    }
+
     private String createDispatchRequest() throws Exception {
         return mockMvc.perform(post("/api/dispatch-requests")
                         .contentType(MediaType.APPLICATION_JSON)

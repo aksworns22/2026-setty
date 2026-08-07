@@ -40,6 +40,20 @@ class DispatchRequestTest {
     }
 
     @Test
+    @DisplayName("판매자 입력 완료 여부는 상태가 아니라 실제 입력값으로 판단한다")
+    void reportsSellerInputCompletionFromInputNotStatus() {
+        final DispatchRequest dispatchRequest = newDispatchRequest();
+
+        assertThat(dispatchRequest.isSellerInputCompleted()).isFalse();
+        assertThat(dispatchRequest.getSellerInputCompletedAt()).isNull();
+
+        dispatchRequest.completeSellerInput(newSellerInput());
+
+        assertThat(dispatchRequest.isSellerInputCompleted()).isTrue();
+        assertThat(dispatchRequest.getSellerInputCompletedAt()).isNotNull();
+    }
+
+    @Test
     @DisplayName("판매자 입력이 채워지면 최종 검토 대기로 넘어간다")
     void movesToFinalReviewPendingWhenSellerInputIsCompleted() {
         final DispatchRequest dispatchRequest = newDispatchRequest();

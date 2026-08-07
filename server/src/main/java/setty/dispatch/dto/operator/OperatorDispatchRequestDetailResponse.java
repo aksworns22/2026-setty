@@ -1,6 +1,8 @@
 package setty.dispatch.dto.operator;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import setty.common.phone.PhoneNumbers;
+import setty.common.time.SeoulDateTime;
 import setty.dispatch.domain.DispatchRequest;
 import setty.dispatch.domain.DispatchStatus;
 import setty.dispatch.domain.SellerInput;
@@ -11,10 +13,15 @@ public record OperatorDispatchRequestDetailResponse(
         String itemType,
         boolean highValueItem,
         Long estimateRequestId,
-        LocalDateTime createdAt,
+        OffsetDateTime createdAt,
         Buyer buyer,
         Seller seller,
-        String sellerInputUrl
+        String sellerInputUrl,
+        OffsetDateTime sellerInputCompletedAt,
+        Integer finalQuotedAmount,
+        OffsetDateTime amountCheckedAt,
+        String operatorNote,
+        String closedReason
 ) {
     public record Buyer(
             String name,
@@ -41,24 +48,29 @@ public record OperatorDispatchRequestDetailResponse(
                 dispatchRequest.getItemType(),
                 dispatchRequest.isHighValueItem(),
                 dispatchRequest.getEstimateRequestId(),
-                dispatchRequest.getCreatedAt(),
+                SeoulDateTime.toOffsetDateTime(dispatchRequest.getCreatedAt()),
                 new Buyer(
                         dispatchRequest.getBuyerName(),
-                        dispatchRequest.getBuyerPhoneNumber(),
+                        PhoneNumbers.format(dispatchRequest.getBuyerPhoneNumber()),
                         dispatchRequest.getDeliveryAddress()
                 ),
                 toSeller(dispatchRequest.getSellerInput()),
-                sellerInputUrl
+                sellerInputUrl,
+                SeoulDateTime.toOffsetDateTime(dispatchRequest.getSellerInputCompletedAt()),
+                dispatchRequest.getFinalQuotedAmount(),
+                SeoulDateTime.toOffsetDateTime(dispatchRequest.getAmountCheckedAt()),
+                dispatchRequest.getOperatorNote(),
+                dispatchRequest.getClosedReason()
         );
     }
 
     private static Seller toSeller(final SellerInput sellerInput) {
-        if (sellerInput == null || sellerInput.getSellerName() == null) {
+        if (sellerInput == null || !sellerInput.isPresent()) {
             return null;
         }
         return new Seller(
                 sellerInput.getSellerName(),
-                sellerInput.getSellerPhoneNumber(),
+                PhoneNumbers.format(sellerInput.getSellerPhoneNumber()),
                 sellerInput.getPickupAddress(),
                 sellerInput.getAvailablePickupTime()
         );
