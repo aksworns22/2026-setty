@@ -10,3 +10,13 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+      open-in-view: false
+server:
+  error:
+    include-message: never
+    include-stacktrace: never
+setty:
+  operator:
+    secret: ${SETTY_OPERATOR_SECRET:}
+  dispatch:
+    seller-input-base-url: ${SETTY_SELLER_INPUT_BASE_URL:http://localhost:5173/seller-input}
