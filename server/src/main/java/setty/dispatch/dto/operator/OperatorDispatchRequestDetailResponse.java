@@ -13,7 +13,8 @@ public record OperatorDispatchRequestDetailResponse(
         Long estimateRequestId,
         LocalDateTime createdAt,
         Buyer buyer,
-        Seller seller
+        Seller seller,
+        String sellerInputUrl
 ) {
     public record Buyer(
             String name,
@@ -30,7 +31,10 @@ public record OperatorDispatchRequestDetailResponse(
     ) {
     }
 
-    public static OperatorDispatchRequestDetailResponse from(final DispatchRequest dispatchRequest) {
+    public static OperatorDispatchRequestDetailResponse from(
+            final DispatchRequest dispatchRequest,
+            final String sellerInputUrl
+    ) {
         return new OperatorDispatchRequestDetailResponse(
                 dispatchRequest.getId(),
                 dispatchRequest.getStatus(),
@@ -43,7 +47,8 @@ public record OperatorDispatchRequestDetailResponse(
                         dispatchRequest.getBuyerPhoneNumber(),
                         dispatchRequest.getDeliveryAddress()
                 ),
-                toSeller(dispatchRequest.getSellerInput())
+                toSeller(dispatchRequest.getSellerInput()),
+                sellerInputUrl
         );
     }
 

@@ -3,7 +3,6 @@ package setty.dispatch.service;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import setty.dispatch.DispatchProperties;
 import setty.dispatch.domain.DispatchRequest;
 import setty.dispatch.domain.SellerInputSession;
 import setty.dispatch.dto.buyer.BuyerDispatchRequestCreateRequest;
@@ -17,16 +16,16 @@ import setty.dispatch.repository.SellerInputSessionRepository;
 public class BuyerDispatchRequestService {
     private final DispatchRequestRepository dispatchRequestRepository;
     private final SellerInputSessionRepository sellerInputSessionRepository;
-    private final DispatchProperties dispatchProperties;
+    private final SellerInputUrlFactory sellerInputUrlFactory;
 
     public BuyerDispatchRequestService(
             final DispatchRequestRepository dispatchRequestRepository,
             final SellerInputSessionRepository sellerInputSessionRepository,
-            final DispatchProperties dispatchProperties
+            final SellerInputUrlFactory sellerInputUrlFactory
     ) {
         this.dispatchRequestRepository = dispatchRequestRepository;
         this.sellerInputSessionRepository = sellerInputSessionRepository;
-        this.dispatchProperties = dispatchProperties;
+        this.sellerInputUrlFactory = sellerInputUrlFactory;
     }
 
     @Transactional
@@ -46,7 +45,7 @@ public class BuyerDispatchRequestService {
 
         return new BuyerDispatchRequestCreateResponse(
                 dispatchRequest.getBuyerToken(),
-                dispatchProperties.sellerInputBaseUrl() + "/" + session.getToken()
+                sellerInputUrlFactory.create(session.getToken())
         );
     }
 

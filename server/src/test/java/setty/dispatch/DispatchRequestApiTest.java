@@ -3,6 +3,7 @@ package setty.dispatch;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -11,6 +12,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.jayway.jsonpath.JsonPath;
 import java.nio.charset.StandardCharsets;
+import java.util.Comparator;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import setty.common.operator.OperatorAuthInterceptor;
 
@@ -214,6 +217,80 @@ class DispatchRequestApiTest {
                 .andExpect(content().string(not(containsString(SELLER_NAME))));
     }
 
+    @Test
+    @DisplayName("운영자 목록은 최신 요청부터 보여준다")
+    void operatorListIsSortedByLatestFirst() throws Exception {
+        createDispatchRequest();
+        createDispatchRequest();
+        createDispatchRequest();
+
+        final List<Integer> ids = JsonPath.read(findAllAsOperator(), "$[*].id");
+
+        assertThat(ids).hasSizeGreaterThanOrEqualTo(3)
+                .isSortedAccordingTo(Comparator.reverseOrder());
+    }
+
+    @Test
+    @DisplayName("상태 필터를 주면 해당 상태의 요청만 조회한다")
+    void operatorListFiltersByStatus() throws Exception {
+        createDispatchRequest();
+        final String submitted = createDispatchRequest();
+        final Integer submittedId = latestDispatchRequestId();
+        submitSellerInput(sellerToken(submitted));
+
+        final String pendingBody = findAllAsOperator("SELLER_INPUT_PENDING");
+        final List<String> pendingStatuses = JsonPath.read(pendingBody, "$[*].status");
+        final List<Integer> pendingIds = JsonPath.read(pendingBody, "$[*].id");
+
+        assertThat(pendingStatuses).isNotEmpty().containsOnly("SELLER_INPUT_PENDING");
+        assertThat(pendingIds).doesNotContain(submittedId);
+
+        final List<Integer> reviewIds = JsonPath.read(findAllAsOperator("FINAL_REVIEW_PENDING"), "$[*].id");
+
+        assertThat(reviewIds).contains(submittedId);
+    }
+
+    @Test
+    @DisplayName("알 수 없는 상태 필터는 잘못된 요청으로 응답한다")
+    void rejectsUnknownStatusFilter() throws Exception {
+        mockMvc.perform(get("/api/operator/dispatch-requests")
+                        .param("status", "존재하지-않는-상태")
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value(containsString("status")))
+                .andExpect(content().string(not(containsString("/api/operator"))));
+    }
+
+    @Test
+    @DisplayName("판매자가 입력하기 전 상세에는 판매자 입력 링크가 있고 판매자 정보는 비어 있다")
+    void operatorDetailExposesSellerInputUrlBeforeSellerSubmission() throws Exception {
+        final String created = createDispatchRequest();
+        final String sellerInputUrl = JsonPath.read(created, "$.sellerInputUrl");
+
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", latestDispatchRequestId())
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sellerInputUrl").value(sellerInputUrl))
+                .andExpect(jsonPath("$.seller").value(nullValue()));
+    }
+
+    @Test
+    @DisplayName("운영자 상세도 비밀 헤더가 없으면 접근을 막는다")
+    void operatorDetailRejectsRequestsWithoutSecret() throws Exception {
+        createDispatchRequest();
+
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", latestDispatchRequestId()))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 배차 요청 상세는 찾을 수 없다고 응답한다")
+    void returnsNotFoundForUnknownDispatchRequestId() throws Exception {
+        mockMvc.perform(get("/api/operator/dispatch-requests/{id}", Long.MAX_VALUE)
+                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+                .andExpect(status().isNotFound());
+    }
+
     private String createDispatchRequest() throws Exception {
         return mockMvc.perform(post("/api/dispatch-requests")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -232,15 +309,27 @@ class DispatchRequestApiTest {
     }
 
     private Integer latestDispatchRequestId() throws Exception {
-        final String body = mockMvc.perform(get("/api/operator/dispatch-requests")
-                        .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET))
+        final List<Integer> ids = JsonPath.read(findAllAsOperator(), "$[*].id");
+
+        return ids.stream().max(Integer::compareTo).orElseThrow();
+    }
+
+    private String findAllAsOperator() throws Exception {
+        return findAllAsOperator(null);
+    }
+
+    private String findAllAsOperator(final String status) throws Exception {
+        final MockHttpServletRequestBuilder request = get("/api/operator/dispatch-requests")
+                .header(OperatorAuthInterceptor.OPERATOR_SECRET_HEADER, OPERATOR_SECRET);
+        if (status != null) {
+            request.param("status", status);
+        }
+
+        return mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(StandardCharsets.UTF_8);
-        final List<Integer> ids = JsonPath.read(body, "$[*].id");
-
-        return ids.stream().max(Integer::compareTo).orElseThrow();
     }
 
     private String buyerToken(final String createResponseBody) {
