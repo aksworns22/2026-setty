@@ -1,6 +1,8 @@
 package setty.dispatch.dto.buyer;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import setty.common.phone.PhoneNumbers;
+import setty.common.time.SeoulDateTime;
 import setty.dispatch.domain.DispatchRequest;
 import setty.dispatch.domain.DispatchStatus;
 
@@ -12,18 +14,18 @@ public record BuyerDispatchRequestResponse(
         String itemType,
         boolean highValueItem,
         boolean sellerInputCompleted,
-        LocalDateTime createdAt
+        OffsetDateTime createdAt
 ) {
     public static BuyerDispatchRequestResponse from(final DispatchRequest dispatchRequest) {
         return new BuyerDispatchRequestResponse(
                 dispatchRequest.getStatus(),
                 dispatchRequest.getBuyerName(),
-                dispatchRequest.getBuyerPhoneNumber(),
+                PhoneNumbers.format(dispatchRequest.getBuyerPhoneNumber()),
                 dispatchRequest.getDeliveryAddress(),
                 dispatchRequest.getItemType(),
                 dispatchRequest.isHighValueItem(),
                 dispatchRequest.isSellerInputCompleted(),
-                dispatchRequest.getCreatedAt()
+                SeoulDateTime.toOffsetDateTime(dispatchRequest.getCreatedAt())
         );
     }
 }

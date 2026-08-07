@@ -3,6 +3,7 @@ package setty.dispatch.service;
 import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import setty.common.phone.PhoneNumbers;
 import setty.dispatch.domain.DispatchRequest;
 import setty.dispatch.domain.SellerInputSession;
 import setty.dispatch.dto.buyer.BuyerDispatchRequestCreateRequest;
@@ -33,7 +34,7 @@ public class BuyerDispatchRequestService {
         final DispatchRequest dispatchRequest = dispatchRequestRepository.save(new DispatchRequest(
                 UUID.randomUUID().toString(),
                 request.buyerName(),
-                request.buyerPhoneNumber(),
+                PhoneNumbers.normalize(request.buyerPhoneNumber()),
                 request.deliveryAddress(),
                 request.itemType(),
                 request.highValueItem(),

@@ -3,6 +3,7 @@ package setty.dispatch.dto.seller;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import setty.common.phone.PhoneNumbers;
 import setty.dispatch.domain.SellerInput;
 
 public record SellerInputSubmitRequest(
@@ -12,6 +13,11 @@ public record SellerInputSubmitRequest(
         @NotBlank @Size(max = 100) String availablePickupTime
 ) {
     public SellerInput toSellerInput() {
-        return new SellerInput(sellerName, sellerPhoneNumber, pickupAddress, availablePickupTime);
+        return new SellerInput(
+                sellerName,
+                PhoneNumbers.normalize(sellerPhoneNumber),
+                pickupAddress,
+                availablePickupTime
+        );
     }
 }
