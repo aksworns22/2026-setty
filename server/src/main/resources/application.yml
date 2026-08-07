@@ -9,4 +9,4 @@ spring:
     password: setty
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
