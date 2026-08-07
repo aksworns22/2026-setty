@@ -4,26 +4,32 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .pageHeader p,
 .detailHeader p {
-  margin: 0 0 6px;
-  color: #007b50;
-  font-size: 13px;
-  font-weight: 800;
+  margin: 0 0 8px;
+  color: var(--setty-color-brand-hover);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .pageHeader h1,
 .detailHeader h1 {
   margin: 0;
-  font-size: 28px;
+  color: var(--setty-color-text-strong);
+  font-size: var(--setty-font-size-title);
+  font-weight: var(--setty-font-weight-title);
+  letter-spacing: -0.5px;
+  line-height: var(--setty-line-height-title);
 }
 
 .pageHeader > span {
   color: var(--setty-color-text-body);
   font-size: 14px;
+  font-weight: 500;
 }
 
 .tableCard,
@@ -31,9 +37,12 @@
 .notificationCard,
 .stateCard {
   border: 1px solid var(--setty-color-border);
-  border-radius: 18px;
+  border-radius: var(--setty-control-radius);
   background: var(--setty-color-surface);
-  box-shadow: 0 8px 28px rgb(25 31 40 / 5%);
+}
+
+.tableCard {
+  overflow: hidden;
 }
 
 .tableScroll {
@@ -55,9 +64,15 @@
 
 .tableCard th {
   background: var(--setty-color-surface-muted);
-  color: var(--setty-color-text-body);
+  color: var(--setty-color-text-muted);
   font-size: 13px;
   font-weight: 700;
+}
+
+.tableCard td {
+  color: var(--setty-color-text-strong);
+  font-size: 14px;
+  font-weight: 500;
 }
 
 .tableCard tbody tr:last-child td {
@@ -71,8 +86,18 @@
 .tableCard a,
 .backLink,
 .stateCard a {
-  color: #007b50;
+  color: #006b46;
   font-weight: 700;
+}
+
+.tableCard a:focus-visible,
+.backLink:focus-visible,
+.stateCard a:focus-visible,
+.stateCard button:focus-visible,
+.notificationForm button:focus-visible,
+.inlineChoices label:has(input:focus-visible) {
+  outline: 3px solid rgb(2 189 121 / 28%);
+  outline-offset: 3px;
 }
 
 .status {
@@ -87,11 +112,11 @@
 
 .status[data-status='ESTIMATE_NOTIFIED'] {
   background: rgb(2 189 121 / 10%);
-  color: #007b50;
+  color: #006b46;
 }
 
 .stateCard {
-  padding: 48px 24px;
+  padding: 56px 24px;
   color: var(--setty-color-text-body);
   text-align: center;
 }
@@ -101,6 +126,7 @@
   margin: 0;
   color: var(--setty-color-text-strong);
   font-size: 20px;
+  letter-spacing: -0.3px;
 }
 
 .stateCard p {
@@ -108,18 +134,25 @@
 }
 
 .stateCard button {
+  min-height: 44px;
   margin-top: 20px;
-  padding: 11px 16px;
+  padding: 0 18px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--setty-color-brand);
   color: var(--setty-color-text-strong);
   cursor: pointer;
   font-weight: 700;
 }
 
+.stateCard button:hover {
+  background: var(--setty-color-brand-hover);
+}
+
 .backLink {
-  display: inline-block;
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
   margin-bottom: 18px;
   text-decoration: none;
 }
@@ -133,20 +166,22 @@
 
 .infoCard,
 .notificationCard {
-  padding: 26px;
+  padding: 28px;
 }
 
 .infoCard h2,
 .notificationCard h2 {
-  margin: 0 0 20px;
+  margin: 0 0 22px;
+  color: var(--setty-color-text-strong);
   font-size: 19px;
+  letter-spacing: -0.3px;
 }
 
 .infoCard dl,
 .notificationCard dl {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 20px 16px;
+  gap: 22px 16px;
   margin: 0;
 }
 
@@ -157,23 +192,25 @@
 
 .infoCard dt,
 .notificationCard dt {
-  margin-bottom: 6px;
-  color: var(--setty-color-text-body);
+  margin-bottom: 7px;
+  color: var(--setty-color-text-muted);
   font-size: 13px;
+  font-weight: 700;
 }
 
 .infoCard dd,
 .notificationCard dd {
   margin: 0;
   overflow-wrap: anywhere;
+  color: var(--setty-color-text-strong);
   font-weight: 700;
 }
 
 .manualNotice,
 .contractWarning {
-  margin: 0 0 22px;
-  padding: 13px 15px;
-  border-radius: 11px;
+  margin: 0 0 24px;
+  padding: 14px 16px;
+  border-radius: 12px;
   background: #fff7e6;
   color: #7a4d00;
   font-size: 13px;
@@ -182,13 +219,13 @@
 
 .notificationForm {
   display: grid;
-  gap: 20px;
+  gap: 22px;
 }
 
 .notificationForm fieldset,
 .notificationForm label {
   display: grid;
-  gap: 8px;
+  gap: 10px;
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -197,7 +234,8 @@
 
 .notificationForm legend,
 .notificationForm label > span {
-  font-size: 14px;
+  color: var(--setty-color-text-muted);
+  font-size: 13.5px;
   font-weight: 700;
 }
 
@@ -209,19 +247,26 @@
 
 .inlineChoices label {
   display: flex;
-  min-height: 44px;
+  min-height: 48px;
   align-items: center;
   grid-template-columns: auto 1fr;
-  padding: 0 14px;
+  padding: 0 16px;
   border: 1px solid var(--setty-color-border);
-  border-radius: 11px;
+  border-radius: var(--setty-control-radius);
+  background: var(--setty-color-surface);
+  color: var(--setty-color-text-body);
   cursor: pointer;
+  font-size: 14px;
+}
+
+.inlineChoices input {
+  accent-color: var(--setty-color-brand);
 }
 
 .inlineChoices label:has(input:checked) {
   border-color: var(--setty-color-brand);
-  background: rgb(2 189 121 / 8%);
-  color: #007b50;
+  background: rgb(2 189 121 / 7%);
+  color: var(--setty-color-text-strong);
   font-weight: 700;
 }
 
@@ -229,18 +274,21 @@
 .notificationForm textarea {
   width: 100%;
   border: 1px solid var(--setty-color-border);
-  border-radius: 11px;
+  border-radius: var(--setty-control-radius);
   outline: none;
+  background: var(--setty-color-surface);
+  color: var(--setty-color-text-strong);
 }
 
 .notificationForm input[type='number'] {
-  min-height: 48px;
-  padding: 0 42px 0 14px;
+  min-height: var(--setty-control-height);
+  padding: 0 42px 0 16px;
 }
 
 .notificationForm textarea {
+  min-height: 148px;
   resize: vertical;
-  padding: 14px;
+  padding: 16px;
   line-height: 1.55;
 }
 
@@ -257,13 +305,15 @@
 .amountInput > span {
   position: absolute;
   top: 50%;
-  right: 14px;
+  right: 16px;
   color: var(--setty-color-text-body);
   transform: translateY(-50%);
 }
 
 .notificationForm small {
-  color: #c62f35;
+  color: #d92d3a;
+  font-size: 12.5px;
+  font-weight: 500;
 }
 
 .notificationForm button {
@@ -273,20 +323,27 @@
   background: var(--setty-color-brand);
   color: var(--setty-color-text-strong);
   cursor: pointer;
-  font-weight: 800;
+  font-size: var(--setty-font-size-action);
+  font-weight: var(--setty-font-weight-action);
+}
+
+.notificationForm button:hover:not(:disabled) {
+  background: var(--setty-color-brand-hover);
 }
 
 .notificationForm button:disabled {
+  background: var(--setty-color-text-subtle);
   cursor: wait;
-  opacity: 0.55;
 }
 
 .submitError {
-  padding: 12px 14px;
-  border-radius: 10px;
-  background: #fff0f0;
+  padding: 14px 16px;
+  border: 1px solid #ffd2d5;
+  border-radius: var(--setty-control-radius);
+  background: #fff5f5;
   color: #b42328;
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .fullWidthDefinition {
@@ -294,8 +351,8 @@
 }
 
 .messageContent {
-  padding: 14px;
-  border-radius: 10px;
+  padding: 16px;
+  border-radius: 12px;
   background: var(--setty-color-surface-muted);
   white-space: pre-wrap;
 }
