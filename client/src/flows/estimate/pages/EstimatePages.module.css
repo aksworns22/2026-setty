@@ -1,43 +1,56 @@
 .page {
-  min-height: 100vh;
-  padding: 32px 20px;
-  background: var(--setty-color-surface-muted);
+  min-height: 100dvh;
+  background: var(--setty-color-surface);
 }
 
 .formCard,
 .resultCard {
-  width: min(100%, 560px);
+  width: min(100%, 402px);
+  min-height: 100dvh;
   margin: 0 auto;
-  padding: 32px 24px;
-  border: 1px solid var(--setty-color-border);
-  border-radius: 24px;
+  padding: 60px 32px 40px;
   background: var(--setty-color-surface);
-  box-shadow: 0 18px 50px rgb(25 31 40 / 8%);
 }
 
 .header {
-  margin-bottom: 24px;
+  margin-bottom: 36px;
 }
 
 .brand {
-  margin: 0 0 8px;
-  color: #007b50;
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin: 0 0 40px;
+  color: var(--setty-color-text-strong);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.brand::before {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: var(--setty-color-brand)
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='none'%3E%3Cpath d='M2.5 6.3 4.7 8.5 9.5 3.7' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
+    center / 12px 12px no-repeat;
+  content: '';
 }
 
 .header h1,
 .resultCard h1 {
   margin: 0;
+  color: var(--setty-color-text-strong);
   font-size: var(--setty-font-size-title);
   font-weight: var(--setty-font-weight-title);
+  letter-spacing: -0.5px;
   line-height: var(--setty-line-height-title);
 }
 
 .header > p:last-child,
-.resultCard > p {
-  margin: 12px 0 0;
+.resultCard > p:not(.brand, .operationNote) {
+  margin: 11px 0 0;
   color: var(--setty-color-text-body);
   font-size: var(--setty-font-size-body);
   font-weight: var(--setty-font-weight-body);
@@ -45,55 +58,67 @@
 }
 
 .form {
-  display: grid;
-  gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
 }
 
 .field {
-  display: grid;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .field > label,
 .choiceGroup legend {
-  color: var(--setty-color-text-strong);
-  font-size: 15px;
+  color: var(--setty-color-text-muted);
+  font-size: 13.5px;
   font-weight: 700;
 }
 
 .field input {
   width: 100%;
-  min-height: var(--setty-control-height);
-  padding: 0 16px;
-  border: 1px solid var(--setty-color-border);
-  border-radius: var(--setty-control-radius);
+  min-height: 44px;
+  padding: 0 0 10px;
+  border: 0;
+  border-bottom: 1px solid var(--setty-color-border);
+  border-radius: 0;
   outline: none;
+  background: transparent;
   color: var(--setty-color-text-strong);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.field input::placeholder {
+  color: var(--setty-color-text-subtle);
+  font-weight: 500;
 }
 
 .field input:focus {
-  border-color: var(--setty-color-brand);
-  box-shadow: 0 0 0 3px rgb(2 189 121 / 14%);
+  border-bottom-color: var(--setty-color-brand);
 }
 
 .field input[aria-invalid='true'] {
-  border-color: #e5484d;
+  border-bottom-color: #f04452;
 }
 
 .field small,
 .choiceGroup small {
-  color: #c62f35;
-  font-size: 13px;
+  color: #d92d3a;
+  font-size: 12.5px;
+  font-weight: 500;
 }
 
 .field .fieldHint {
-  color: var(--setty-color-text-body);
+  color: var(--setty-color-text-subtle);
   line-height: 1.45;
 }
 
 .choiceGroup {
   display: grid;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
   margin: 0;
   padding: 0;
@@ -114,22 +139,32 @@
   gap: 8px;
   border: 1px solid var(--setty-color-border);
   border-radius: var(--setty-control-radius);
+  background: var(--setty-color-surface);
+  color: var(--setty-color-text-body);
   cursor: pointer;
+  font-size: var(--setty-font-size-body);
+  font-weight: var(--setty-font-weight-body);
+}
+
+.choices input {
+  accent-color: var(--setty-color-brand);
 }
 
 .choices label:has(input:checked) {
   border-color: var(--setty-color-brand);
-  background: rgb(2 189 121 / 8%);
-  color: #007b50;
+  background: rgb(2 189 121 / 7%);
+  color: var(--setty-color-text-strong);
   font-weight: 700;
 }
 
 .formError {
   padding: 14px 16px;
-  border-radius: 12px;
-  background: #fff0f0;
+  border: 1px solid #ffd2d5;
+  border-radius: var(--setty-control-radius);
+  background: #fff5f5;
   color: #b42328;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 .primaryButton {
@@ -147,66 +182,86 @@
   background: var(--setty-color-brand-hover);
 }
 
+.primaryButton:focus-visible,
+.secondaryLink:focus-visible,
+.choices label:has(input:focus-visible) {
+  outline: 3px solid rgb(2 189 121 / 28%);
+  outline-offset: 3px;
+}
+
 .primaryButton:disabled {
+  background: var(--setty-color-text-subtle);
   cursor: wait;
-  opacity: 0.55;
 }
 
 .operationNote {
   margin: 20px 0 0;
-  color: var(--setty-color-text-body);
-  font-size: 13px;
+  color: var(--setty-color-text-muted);
+  font-size: 12.5px;
+  font-weight: 500;
   line-height: 1.55;
 }
 
 .resultCard {
-  margin-top: min(15vh, 120px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 24px;
+  padding-left: 24px;
   text-align: center;
+}
+
+.resultCard > .brand {
+  order: -1;
+  margin-bottom: 0;
 }
 
 .resultIcon {
   display: grid;
-  width: 64px;
-  height: 64px;
+  width: 84px;
+  height: 84px;
   place-items: center;
-  margin: 0 auto 20px;
+  margin: 96px auto 40px;
   border-radius: 50%;
   background: rgb(2 189 121 / 12%);
-  color: #007b50;
-  font-size: 30px;
+  color: var(--setty-color-brand-hover);
+  font-size: 38px;
   font-weight: 800;
+}
+
+.resultCard .operationNote {
+  margin-top: 18px;
 }
 
 .secondaryLink {
   display: inline-flex;
-  min-height: 48px;
+  width: 100%;
+  min-height: var(--setty-control-height);
   align-items: center;
   justify-content: center;
-  margin-top: 28px;
+  margin-top: 36px;
   padding: 0 20px;
   border: 1px solid var(--setty-color-border);
-  border-radius: 12px;
+  border-radius: var(--setty-control-radius);
   color: var(--setty-color-text-strong);
-  font-weight: 700;
+  font-size: var(--setty-font-size-action);
+  font-weight: var(--setty-font-weight-action);
   text-decoration: none;
 }
 
-@media (max-width: 480px) {
-  .page {
-    padding: 0;
-    background: var(--setty-color-surface);
-  }
+.secondaryLink:hover {
+  border-color: var(--setty-color-brand);
+  background: rgb(2 189 121 / 5%);
+  color: var(--setty-color-text-strong);
+}
 
+@media (max-width: 402px) {
   .formCard,
   .resultCard {
-    min-height: 100vh;
-    padding: 28px 20px;
-    border: 0;
-    border-radius: 0;
-    box-shadow: none;
+    padding-top: 48px;
   }
 
-  .resultCard {
-    padding-top: 18vh;
+  .resultIcon {
+    margin-top: 80px;
   }
 }
