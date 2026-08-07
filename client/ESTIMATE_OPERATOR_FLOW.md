@@ -91,7 +91,7 @@ FE 안내는 `ESTIMATE_NOTIFIED` 완료 시점부터 30일 보관, 수동 철회
 
 | 목적            | 요청·저장                                                   | FE 동작                                                           |
 | --------------- | ----------------------------------------------------------- | ----------------------------------------------------------------- |
-| 비밀번호 검증   | `GET /api/operator/estimate-requests` + `X-Operator-Secret` | 입력값으로 먼저 요청하고 `2xx`일 때만 저장, `401`이면 로그인 오류 |
+| 비밀번호 검증   | `GET /api/operator/auth` + `X-Operator-Secret`              | 입력값으로 먼저 요청하고 `authenticated: true`일 때만 저장, `401`이면 로그인 오류 |
 | 탭 세션 유지    | `sessionStorage['setty.operatorSecret']`                    | 새로고침 동안 유지하고 탭이 닫히면 제거                           |
 | 운영자 API 호출 | 모든 `/api/operator/**` 견적 GET·POST에 `X-Operator-Secret` | 저장한 값을 헤더로 첨부                                           |
 | 로그아웃        | client 저장값 삭제                                          | server 요청 없이 `/operator/login`으로 이동                       |

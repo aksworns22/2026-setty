@@ -80,7 +80,7 @@ test('운영자 비밀번호 오류와 로그인 성공 후 빈 목록을 구분
   const user = userEvent.setup();
   fetchMock
     .mockResolvedValueOnce(response({ code: 'UNAUTHORIZED' }, 401))
-    .mockResolvedValueOnce(response([]))
+    .mockResolvedValueOnce(response({ authenticated: true }))
     .mockResolvedValueOnce(response([]));
   renderAt('/operator/login');
 
@@ -98,7 +98,9 @@ test('운영자 비밀번호 오류와 로그인 성공 후 빈 목록을 구분
   expect(
     await screen.findByRole('heading', { name: '접수된 견적 요청이 없어요' }),
   ).toBeInTheDocument();
-  expect(fetchMock.mock.calls[0]?.[0]).toBe(
+  expect(fetchMock.mock.calls[0]?.[0]).toBe('http://localhost:8080/api/operator/auth');
+  expect(fetchMock.mock.calls[1]?.[0]).toBe('http://localhost:8080/api/operator/auth');
+  expect(fetchMock.mock.calls[2]?.[0]).toBe(
     'http://localhost:8080/api/operator/estimate-requests',
   );
   expectOperatorSecretHeader(0, WRONG_TEST_OPERATOR_SECRET);

@@ -1,5 +1,6 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { clearOperatorSecret } from '@/flows/operator/auth/operatorSecretStorage';
+import OperatorNavigation from './OperatorNavigation';
 import styles from './OperatorShell.module.css';
 
 export default function OperatorShell() {
@@ -25,6 +26,7 @@ export default function OperatorShell() {
           </button>
         </div>
       </header>
+      <OperatorNavigation />
       <main className={styles.content}>
         <Outlet />
       </main>
