@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import java.time.LocalDateTime;
+import setty.common.time.SeoulDateTime;
 import setty.dispatch.exception.DispatchStatusTransitionException;
 
 @Entity
@@ -44,6 +45,18 @@ public class DispatchRequest {
     @Embedded
     private SellerInput sellerInput;
 
+    private LocalDateTime sellerInputCompletedAt;
+
+    private Integer finalQuotedAmount;
+
+    private LocalDateTime amountCheckedAt;
+
+    @Column(length = 500)
+    private String operatorNote;
+
+    @Column(length = 200)
+    private String closedReason;
+
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
@@ -67,7 +80,7 @@ public class DispatchRequest {
         this.highValueItem = highValueItem;
         this.estimateRequestId = estimateRequestId;
         this.status = DispatchStatus.SELLER_INPUT_PENDING;
-        this.createdAt = LocalDateTime.now();
+        this.createdAt = SeoulDateTime.now();
     }
 
     public void completeSellerInput(final SellerInput input) {
@@ -75,6 +88,7 @@ public class DispatchRequest {
             throw new DispatchStatusTransitionException(status, DispatchStatus.FINAL_REVIEW_PENDING);
         }
         this.sellerInput = input;
+        this.sellerInputCompletedAt = SeoulDateTime.now();
         this.status = DispatchStatus.FINAL_REVIEW_PENDING;
     }
 
@@ -120,6 +134,26 @@ public class DispatchRequest {
 
     public SellerInput getSellerInput() {
         return sellerInput;
+    }
+
+    public LocalDateTime getSellerInputCompletedAt() {
+        return sellerInputCompletedAt;
+    }
+
+    public Integer getFinalQuotedAmount() {
+        return finalQuotedAmount;
+    }
+
+    public LocalDateTime getAmountCheckedAt() {
+        return amountCheckedAt;
+    }
+
+    public String getOperatorNote() {
+        return operatorNote;
+    }
+
+    public String getClosedReason() {
+        return closedReason;
     }
 
     public LocalDateTime getCreatedAt() {
