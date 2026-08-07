@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
@@ -23,6 +24,11 @@ public class OperatorAuthInterceptor implements HandlerInterceptor {
             final HttpServletResponse response,
             final Object handler
     ) {
+        // preflight에는 브라우저가 인증 헤더를 싣지 않는다. 여기서 막으면 본 요청 자체가 오지 않는다.
+        if (CorsUtils.isPreFlightRequest(request)) {
+            return true;
+        }
+
         final String configuredSecret = operatorAuthProperties.secret();
         if (configuredSecret == null || configuredSecret.isBlank()) {
             throw new UnauthorizedOperatorException();
