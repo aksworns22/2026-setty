@@ -1,12 +1,33 @@
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
 import App from '@/app/App';
 
-test('버튼을 누르면 카운트가 올라간다', async () => {
-  render(<App />);
+const fetchMock = jest.fn() as jest.MockedFunction<typeof fetch>;
 
-  const button = screen.getByRole('button', { name: /클릭/ });
-  await userEvent.click(button);
+beforeEach(() => {
+  fetchMock.mockReset();
+  Object.defineProperty(globalThis, 'fetch', {
+    configurable: true,
+    value: fetchMock,
+    writable: true,
+  });
+});
 
-  expect(screen.getByRole('button', { name: /클릭 1회/ })).toBeInTheDocument();
+test('루트 경로는 견적 화면으로 이동하지 않고 후속 공동 홈을 위해 비워 둔다', () => {
+  render(
+    <MemoryRouter initialEntries={['/']}>
+      <App />
+    </MemoryRouter>,
+  );
+
+  expect(
+    screen.getByRole('heading', { name: '페이지를 찾을 수 없어요' }),
+  ).toBeInTheDocument();
+  expect(
+    screen.queryByRole('heading', { name: '예상 견적을 요청해 주세요' }),
+  ).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole('link', { name: '예상 견적 요청으로 이동' }),
+  ).not.toBeInTheDocument();
+  expect(fetchMock).not.toHaveBeenCalled();
 });
