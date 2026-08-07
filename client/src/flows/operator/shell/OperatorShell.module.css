@@ -1,0 +1,89 @@
+.appShell {
+  min-height: 100vh;
+  background: var(--setty-color-surface-muted);
+}
+
+.header {
+  display: flex;
+  min-height: 68px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 0 32px;
+  border-bottom: 1px solid var(--setty-color-border);
+  background: var(--setty-color-surface);
+}
+
+.header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand {
+  color: #007b50;
+  font-size: 20px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.role {
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: var(--setty-color-surface-muted);
+  color: var(--setty-color-text-body);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.actions span {
+  color: #b42328;
+  font-size: 13px;
+}
+
+.actions {
+  position: relative;
+}
+
+.actions button {
+  padding: 9px 12px;
+  border: 1px solid var(--setty-color-border);
+  border-radius: 10px;
+  background: var(--setty-color-surface);
+  cursor: pointer;
+}
+
+.actions button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.content {
+  width: min(100% - 40px, 1180px);
+  margin: 0 auto;
+  padding: 36px 0 64px;
+}
+
+@media (max-width: 640px) {
+  .header {
+    padding: 0 18px;
+  }
+
+  .actions span {
+    position: absolute;
+    z-index: 1;
+    top: 44px;
+    right: 0;
+    width: min(260px, calc(100vw - 36px));
+    padding: 9px 11px;
+    border: 1px solid #f0b8ba;
+    border-radius: 9px;
+    background: #fff0f0;
+    text-align: right;
+  }
+
+  .content {
+    width: min(100% - 28px, 1180px);
+    padding-top: 24px;
+  }
+}
