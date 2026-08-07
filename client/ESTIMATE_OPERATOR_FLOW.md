@@ -2,7 +2,7 @@
 
 - 기준 Issue: `#12 feat: 예상 견적 제출과 관리자 문자 안내 완료 기록 기능`
 - 구현 브랜치: `feature/12-client-estimate-operator`
-- 현재 단계: FE 계약·개인정보 동의 UI·공유 비밀번호 헤더 인증 구현. server API·동의 증적·삭제·운영자 인터셉터와 DEV CORS는 BE 통합 전 확인 필요
+- 현재 단계: FE 계약·개인정보 동의 UI·공유 비밀번호 헤더 인증 구현. 견적 API·운영자 인터셉터·DEV CORS는 `develop`에 통합됐고, server 동의 증적·삭제와 실제 DEV 환경 검증은 후속 확인 필요
 - 테스트 데이터: 자동화 테스트·로그·스크린샷에는 실제 개인정보가 아닌 명백한 가상 데이터만 사용
 
 ## 완성할 결과
@@ -23,7 +23,9 @@
 
 | URL                               | 소유 경로                    | 결과                         |
 | --------------------------------- | ---------------------------- | ---------------------------- |
-| `/`                               | 후속 공동 홈                 | Issue #12에서 소유하지 않음  |
+| `/`                               | 공용 app + `flows/dispatch`  | 배차 시작·예상 견적 이동     |
+| `/seller-input/:token`            | `flows/dispatch/**`          | 판매자 정보 입력             |
+| `/final-amount/:token`            | `flows/dispatch/**`          | 구매자 최종 금액 확인        |
 | `/estimate`                       | `flows/estimate/**`          | 사용자 견적 입력·제출        |
 | `/estimate/privacy`               | `flows/estimate/**`          | 견적 개인정보 처리 안내      |
 | `/estimate/submitted`             | `flows/estimate/**`          | 수동 문자 안내 예정임을 표시 |
@@ -31,13 +33,13 @@
 | `/operator/estimate-requests`     | `flows/operator/estimate/**` | 개인정보 없는 최신순 목록    |
 | `/operator/estimate-requests/:id` | `flows/operator/estimate/**` | 상세 확인·문자 완료 기록     |
 
-`app`은 라우팅만 조합한다. estimate·operator·dispatch는 서로 직접 import하지 않는다. `flows/dispatch/**`는 Issue #12에서 변경하지 않는다.
+`app`은 라우팅만 조합한다. estimate·operator·dispatch는 서로 직접 import하지 않는다. 최신 `develop`의 배차 화면은 공용 app 어댑터에서 루트·토큰 URL에 연결하고, `flows/dispatch/**`는 Issue #12에서 변경하지 않는다.
 
 각 사용자 flow의 경로 정의는 해당 flow의 `routes.tsx`가 소유하고, `src/app/routes/AppRoutes.tsx`는 route 배열만 합친다. 운영자 영역은 `flows/operator/routes.tsx`가 공용 로그인·보호·shell과 하위 route 조합을 담당하고, 견적 화면 경로는 `flows/operator/estimate/routes.tsx`가 소유한다. 다음 배차 운영 이슈에서는 `flows/operator/dispatch/routes.tsx`를 새로 추가하고 공용 operator 조합 파일에 한 번 연결해 견적 화면 파일의 충돌을 피한다. 현재 `/operator` 기본 이동은 견적 목록이지만, 배차 화면을 추가할 때 공동 대시보드 또는 기본 화면을 정해야 하는 의도적인 공용 결정 지점이다.
 
 `src/shared/api/http.ts`는 estimate와 operator가 실제로 함께 사용하는 최소 HTTP 기반이다. 배차 FE가 별도 공용 클라이언트를 중복 생성하지 않고, 이 파일을 공동 변경해야 할 때 두 FE가 먼저 계약을 확인한다.
 
-`/`는 이후 estimate와 dispatch를 함께 안내할 공동 홈을 위해 예약한다. Issue #12는 홈을 구현하거나 `/`를 `/estimate`로 자동 이동시키지 않는다. 공동 홈이 정해지기 전 `/`와 알 수 없는 경로는 estimate CTA가 없는 공용 404만 표시한다.
+`/`는 Issue #12가 견적 전용 진입점으로 소유하지 않는다. 배차 FE가 `develop`에 추가한 시작 화면을 현재 공동 진입 화면으로 사용하고, app 어댑터가 그 화면의 `예상 견적 확인하기` 동작만 `/estimate`에 연결한다. Issue #12는 홈 UI를 새로 구현하거나 `/`를 `/estimate`로 자동 이동시키지 않는다. 알 수 없는 경로는 특정 flow CTA가 없는 공용 404를 표시한다.
 
 ## FE가 사용하는 API 계약
 
@@ -85,14 +87,14 @@ FE 안내는 `ESTIMATE_NOTIFIED` 완료 시점부터 30일 보관, 수동 철회
 
 ### 운영자 인증 계약 — 배차 BE 공용 규칙 채택
 
-배차 BE 브랜치의 공용 운영자 인터셉터 규칙을 견적 FE에도 사용한다. 배차 API 자체를 호출하거나 배차 화면을 구현하는 것은 다음 Issue 범위다.
+배차 BE의 공용 운영자 인터셉터 규칙을 견적 FE에도 사용한다. 배차 사용자 API·화면은 별도 배차 Issue에서 `develop`에 병합된 결과이며, 이 PR은 해당 flow를 수정하지 않고 공용 app에서 경로만 조합한다.
 
-| 목적 | 요청·저장 | FE 동작 |
-| ---- | --------- | ------- |
-| 비밀번호 검증 | `GET /api/operator/estimate-requests` + `X-Operator-Secret` | 입력값으로 먼저 요청하고 `2xx`일 때만 저장, `401`이면 로그인 오류 |
-| 탭 세션 유지 | `sessionStorage['setty.operatorSecret']` | 새로고침 동안 유지하고 탭이 닫히면 제거 |
-| 운영자 API 호출 | 모든 `/api/operator/**` 견적 GET·POST에 `X-Operator-Secret` | 저장한 값을 헤더로 첨부 |
-| 로그아웃 | client 저장값 삭제 | server 요청 없이 `/operator/login`으로 이동 |
+| 목적            | 요청·저장                                                   | FE 동작                                                           |
+| --------------- | ----------------------------------------------------------- | ----------------------------------------------------------------- |
+| 비밀번호 검증   | `GET /api/operator/estimate-requests` + `X-Operator-Secret` | 입력값으로 먼저 요청하고 `2xx`일 때만 저장, `401`이면 로그인 오류 |
+| 탭 세션 유지    | `sessionStorage['setty.operatorSecret']`                    | 새로고침 동안 유지하고 탭이 닫히면 제거                           |
+| 운영자 API 호출 | 모든 `/api/operator/**` 견적 GET·POST에 `X-Operator-Secret` | 저장한 값을 헤더로 첨부                                           |
+| 로그아웃        | client 저장값 삭제                                          | server 요청 없이 `/operator/login`으로 이동                       |
 
 server는 `SETTY_OPERATOR_SECRET` 환경 변수와 헤더를 비교하고 `/api/operator/**`를 보호한다. 모든 운영자 API의 `401`에서 FE는 저장값을 지우고 로그인 화면으로 이동한다. `/api/operator/session`, cookie와 `credentials: include`는 사용하지 않는다.
 
@@ -100,7 +102,7 @@ server는 `SETTY_OPERATOR_SECRET` 환경 변수와 헤더를 비교하고 `/api/
 
 FE는 개인정보가 포함될 수 있는 운영자 응답에 `cache: no-store`를 사용한다. BE와 reverse proxy도 `Cache-Control: no-store`를 반환하는지 실제 DEV에서 함께 확인한다.
 
-배차 BE의 운영자 인터셉터가 견적 BE와 병합되면 같은 `/api/operator/**` 경로의 견적 API도 보호된다. 견적 BE 브랜치만으로는 아직 이 보호가 없으므로 병합·배포 후 `401`과 정상 헤더 요청을 통합 검증하기 전에는 실제 운영자 보호 완료로 보지 않는다.
+현재 `develop`에는 배차 BE의 공용 운영자 인터셉터와 견적 API가 함께 병합되어 같은 `/api/operator/**` 경로의 견적 API도 보호한다. 다만 DEV 배포 후 `401`과 정상 헤더 요청을 실제 origin에서 통합 검증하기 전에는 운영자 보호 완료로 보지 않는다.
 
 ### API 주소와 CORS
 
@@ -120,7 +122,7 @@ FE는 개인정보가 포함될 수 있는 운영자 응답에 `cache: no-store`
 
 ## 의도적으로 제외
 
-- 공동 홈과 `/` 진입 정책, 사진 업로드, 사용자 견적 결과 조회, 요청 취소, 배차 연결
+- 별도 공동 홈 신규 디자인, 사진 업로드, 사용자 견적 결과 조회, 요청 취소, 배차 요청 자동 연결
 - 자동 가격 계산, 자동 SMS, 운송사 API, 자동 배차
 - 문자 초안 저장, 페이지네이션, 복잡한 중복·재시도, 다중 운영자 수정
 - 사용자 계정과 운영자 계정 관리

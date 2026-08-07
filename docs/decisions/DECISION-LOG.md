@@ -36,7 +36,7 @@
 | DEC-020 | 검증 필요 | 견적 FE MVP 적용안 구현, BE 동의 증적·삭제와 팀 합의는 후속 | [DEC-020](DEC-020-privacy-retention.md) |
 | DEC-021 | 검증 필요 | 카카오퀵 단일 채널 방향, 실제 조건은 공개 전 확인 | [DEC-021](DEC-021-transport-channel.md) |
 | DEC-022 | 합의 | 내부 상태와 사용자 표시 분리, 변경 주체 제한 | [DEC-022](DEC-022-status-model.md) |
-| DEC-023 | 부분 합의 | MySQL·Flyway·S3 방향, 인증·비밀·용량은 기술 검증 | [DEC-023](DEC-023-storage-and-admin.md) |
+| DEC-023 | 부분 합의 | 첫 MVP MySQL·JPA 스키마 자동 생성, Flyway는 검증 후 재검토. S3·인증·비밀·용량은 기술 검증 | [DEC-023](DEC-023-storage-and-admin.md) |
 | DEC-024 | 합의·역할 배정 반영 | 예상 견적은 캐리·밀란, 배차 요청은 스마일·타스·코코가 사용자 흐름별로 담당 | [DEC-024](DEC-024-sprint-roles.md) |
 | DEC-025 | 합의·명령 검증 필요 | develop 기반 Issue 브랜치, Merge commit, 수동 배포 | [DEC-025](DEC-025-git-and-done.md) |
 
