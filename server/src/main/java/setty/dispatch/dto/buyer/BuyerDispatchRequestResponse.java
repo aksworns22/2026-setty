@@ -14,9 +14,13 @@ public record BuyerDispatchRequestResponse(
         String itemType,
         boolean highValueItem,
         boolean sellerInputCompleted,
-        OffsetDateTime createdAt
+        OffsetDateTime createdAt,
+        String sellerInputUrl
 ) {
-    public static BuyerDispatchRequestResponse from(final DispatchRequest dispatchRequest) {
+    public static BuyerDispatchRequestResponse from(
+            final DispatchRequest dispatchRequest,
+            final String sellerInputUrl
+    ) {
         return new BuyerDispatchRequestResponse(
                 dispatchRequest.getStatus(),
                 dispatchRequest.getBuyerName(),
@@ -25,7 +29,8 @@ public record BuyerDispatchRequestResponse(
                 dispatchRequest.getItemType(),
                 dispatchRequest.isHighValueItem(),
                 dispatchRequest.isSellerInputCompleted(),
-                SeoulDateTime.toOffsetDateTime(dispatchRequest.getCreatedAt())
+                SeoulDateTime.toOffsetDateTime(dispatchRequest.getCreatedAt()),
+                sellerInputUrl
         );
     }
 }

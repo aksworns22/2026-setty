@@ -312,19 +312,40 @@ class DispatchRequestApiTest {
     }
 
     @Test
-    @DisplayName("판매자 입력 링크는 구매자와 판매자 응답에 노출하지 않는다")
-    void sellerInputUrlIsNeverExposedToBuyerOrSeller() throws Exception {
+    @DisplayName("판매자 입력 링크는 링크를 만든 구매자에게만 돌려주고 판매자 응답에는 담지 않는다")
+    void sellerInputUrlIsExposedToBuyerOnly() throws Exception {
         final String created = createDispatchRequest();
         final String sellerToken = sellerToken(created);
 
         mockMvc.perform(get("/api/dispatch-requests/{buyerToken}", buyerToken(created)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sellerInputUrl").doesNotExist())
-                .andExpect(content().string(not(containsString(sellerToken))));
+                .andExpect(jsonPath("$.sellerInputUrl").value(sellerInputUrl(created)));
 
         mockMvc.perform(get("/api/dispatch-requests/seller-sessions/{token}", sellerToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sellerInputUrl").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("구매자는 재방문해서도 처음 발급받은 판매자 입력 링크를 다시 확인한다")
+    void buyerSeesSameSellerInputUrlOnRevisit() throws Exception {
+        final String created = createDispatchRequest();
+
+        mockMvc.perform(get("/api/dispatch-requests/{buyerToken}", buyerToken(created)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sellerInputUrl").value(sellerInputUrl(created)));
+    }
+
+    @Test
+    @DisplayName("판매자 입력이 끝난 뒤에도 구매자 응답에 링크가 남는다")
+    void buyerStillSeesSellerInputUrlAfterSubmission() throws Exception {
+        final String created = createDispatchRequest();
+        submitSellerInput(sellerToken(created));
+
+        mockMvc.perform(get("/api/dispatch-requests/{buyerToken}", buyerToken(created)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.sellerInputCompleted").value(true))
+                .andExpect(jsonPath("$.sellerInputUrl").value(sellerInputUrl(created)));
     }
 
     @Test
@@ -427,8 +448,12 @@ class DispatchRequestApiTest {
     }
 
     private String sellerToken(final String createResponseBody) {
-        final String url = JsonPath.read(createResponseBody, "$.sellerInputUrl");
+        final String url = sellerInputUrl(createResponseBody);
 
         return url.substring(url.lastIndexOf('/') + 1);
+    }
+
+    private String sellerInputUrl(final String createResponseBody) {
+        return JsonPath.read(createResponseBody, "$.sellerInputUrl");
     }
 }

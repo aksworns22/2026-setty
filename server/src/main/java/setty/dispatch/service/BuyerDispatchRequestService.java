@@ -54,7 +54,11 @@ public class BuyerDispatchRequestService {
     public BuyerDispatchRequestResponse findByBuyerToken(final String buyerToken) {
         final DispatchRequest dispatchRequest = dispatchRequestRepository.findByBuyerToken(buyerToken)
                 .orElseThrow(DispatchRequestNotFoundException::new);
+        final String sellerInputUrl = sellerInputSessionRepository.findByDispatchRequestId(dispatchRequest.getId())
+                .map(SellerInputSession::getToken)
+                .map(sellerInputUrlFactory::create)
+                .orElse(null);
 
-        return BuyerDispatchRequestResponse.from(dispatchRequest);
+        return BuyerDispatchRequestResponse.from(dispatchRequest, sellerInputUrl);
     }
 }
