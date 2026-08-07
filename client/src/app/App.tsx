@@ -1,5 +1,5 @@
-import DispatchFlow from '@/flows/dispatch/DispatchFlow';
+import AppRoutes from './routes/AppRoutes';
 
 export default function App() {
-  return <DispatchFlow />;
+  return <AppRoutes />;
 }

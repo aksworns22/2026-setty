@@ -1,0 +1,108 @@
+.loginPage,
+.statePage {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background: var(--setty-color-surface-muted);
+}
+
+.loginCard,
+.stateCard {
+  width: min(100%, 420px);
+  padding: 36px 32px;
+  border: 1px solid var(--setty-color-border);
+  border-radius: 20px;
+  background: var(--setty-color-surface);
+  box-shadow: 0 18px 50px rgb(25 31 40 / 10%);
+}
+
+.brand {
+  margin: 0 0 8px;
+  color: #007b50;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.loginCard h1,
+.stateCard h1 {
+  margin: 0;
+  font-size: 26px;
+}
+
+.description,
+.stateCard p {
+  margin: 12px 0 0;
+  color: var(--setty-color-text-body);
+  line-height: 1.6;
+}
+
+.loginForm {
+  display: grid;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.loginForm label {
+  display: grid;
+  gap: 8px;
+}
+
+.loginForm label span {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.loginForm input {
+  min-height: var(--setty-control-height);
+  padding: 0 16px;
+  border: 1px solid var(--setty-color-border);
+  border-radius: var(--setty-control-radius);
+  outline: none;
+}
+
+.loginForm input:focus {
+  border-color: var(--setty-color-brand);
+  box-shadow: 0 0 0 3px rgb(2 189 121 / 14%);
+}
+
+.loginForm button,
+.stateCard button {
+  min-height: var(--setty-control-height);
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--setty-control-radius);
+  background: var(--setty-color-brand);
+  color: var(--setty-color-text-strong);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.loginForm button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.errorMessage {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #fff0f0;
+  color: #b42328;
+  font-size: 14px;
+}
+
+.securityNote {
+  margin: 20px 0 0;
+  color: var(--setty-color-text-body);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.statePage > p {
+  color: var(--setty-color-text-body);
+}
+
+.stateCard button {
+  margin-top: 20px;
+}
