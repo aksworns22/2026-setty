@@ -5,7 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import setty.dispatch.domain.DispatchStatus;
 import setty.dispatch.dto.operator.OperatorDispatchRequestDetailResponse;
 import setty.dispatch.dto.operator.OperatorDispatchRequestSummaryResponse;
 import setty.dispatch.service.OperatorDispatchService;
@@ -20,8 +22,10 @@ public class OperatorDispatchController {
     }
 
     @GetMapping
-    public ResponseEntity<List<OperatorDispatchRequestSummaryResponse>> findAll() {
-        return ResponseEntity.ok(operatorDispatchService.findAll());
+    public ResponseEntity<List<OperatorDispatchRequestSummaryResponse>> findAll(
+            @RequestParam(required = false) final DispatchStatus status
+    ) {
+        return ResponseEntity.ok(operatorDispatchService.findAll(status));
     }
 
     @GetMapping("/{id}")
