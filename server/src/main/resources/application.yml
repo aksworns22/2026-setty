@@ -10,7 +10,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    open-in-view: false
+      open-in-view: false
 server:
   error:
     include-message: never
